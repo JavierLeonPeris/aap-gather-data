@@ -106,6 +106,19 @@
         validate_certs: "{{ aap_validate_certs | default(false) }}"
       register: r_credential_types
 
+    - name: Get execution environments
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/execution_environments/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        headers:
+          Content-Type: application/json
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: r_execution_environments
+
     - name: Output
       ansible.builtin.debug:
         msg:
@@ -120,6 +133,7 @@
           - "Number of JT: {{ r_metrics['json']['awx_job_templates_total']['samples'][0]['value'] }}"
           - "Number of workflows: {{ r_metrics['json']['awx_workflow_job_templates_total']['samples'][0]['value'] }}"
           - "Number of credential types: {{ r_credential_types['json']['count'] }}"
+          - "Number of execution environments: {{ r_execution_environments['json']['count'] }}"
           - "Number of hosts: {{ r_metrics['json']['awx_hosts_total']['samples'] }}"
           - "{{ r_metrics['json']['awx_status_total']['samples'] }}"
           - "{{ r_metrics['json']['awx_system_info']['samples'][0]['labels'] }}"
