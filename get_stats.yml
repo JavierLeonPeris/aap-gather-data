@@ -119,6 +119,63 @@
         validate_certs: "{{ aap_validate_certs | default(false) }}"
       register: r_execution_environments
 
+    - name: Get schedules count
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/schedules/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: r_schedules
+
+    - name: Get activity stream count
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/activity_stream/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: r_activity_stream
+
+    - name: Get workflow approvals count
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/workflow_approvals/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: workflow_approvals
+
+    - name: Get hosts count
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/hosts/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: r_hosts
+
+    - name: Get job count
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/jobs/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        headers:
+          Content-Type: application/json
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: r_jobs
+
     - name: Output
       ansible.builtin.debug:
         msg:
@@ -138,5 +195,11 @@
           - "{{ r_metrics['json']['awx_status_total']['samples'] }}"
           - "{{ r_metrics['json']['awx_system_info']['samples'][0]['labels'] }}"
           - "{{ r_subscription['json']['LICENSE'] }}"
+          - "Total Hosts: {{ r_hosts['json']['count'] }}"
+          - "Total Jobs: {{ r_jobs['json']['count'] }}"
+          - "Schedules Count From Metrics: {{ r_metrics['json']['awx_schedules_total']['samples'][0]['value'] }}"
+          - "Schedules Count: {{ r_schedules['json']['count'] }}"
+          - "Activity Stream Count: {{ r_activity_stream['json']['count'] }}"
+          - "Workflow Approvals Count: {{ workflow_approvals['json']['count'] }}"
 
 ...
