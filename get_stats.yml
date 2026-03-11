@@ -202,4 +202,76 @@
           - "Activity Stream Count: {{ r_activity_stream['json']['count'] }}"
           - "Workflow Approvals Count: {{ workflow_approvals['json']['count'] }}"
 
-...
+    - name: Get job settings
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/settings/jobs/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: r_job_settings
+
+    - name: Show job settings
+      ansible.builtin.debug:
+        msg: "Job Settings: {{ r_job_settings['json'] }}"
+
+    - name: Show subscription settings
+      ansible.builtin.debug:
+        msg: "Subscription Settings: {{ r_subscription['json'] }}"
+
+    - name: Get LDAP settings
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/settings/ldap/?format=json
+        method: GET
+        force_basic_auth: true
+
+    - name: Show LDAP settings
+      ansible.builtin.debug:
+        msg: "LDAP Settings: {{ r_ldap_settings['json'] }}"
+
+    - name: Get SAML settings
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/settings/saml/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: r_saml_settings
+
+    - name: Show SAML settings
+      ansible.builtin.debug:
+        msg: "SAML Settings: {{ r_saml_settings['json'] }}"
+
+    - name: Get logging settings
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/settings/logging/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: r_logging_settings
+
+    - name: Show logging settings
+      ansible.builtin.debug:
+        msg: "Logging Settings: {{ r_logging_settings['json'] }}"
+
+    - name: Get authentication settings
+      ansible.builtin.uri:
+        url: https://{{ aap_hostname }}/api/controller/v2/settings/authentication/?format=json
+        method: GET
+        force_basic_auth: true
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        return_content: true
+        validate_certs: "{{ aap_validate_certs | default(false) }}"
+      register: r_authentication_settings
+
+    - name: Show authentication settings
+      ansible.builtin.debug:
+        msg: "Authentication Settings: {{ r_authentication_settings['json'] }}"
